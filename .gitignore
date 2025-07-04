@@ -1,0 +1,68 @@
+# === Python Compiled Files ===
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# === Virtual Environments ===
+.venv/
+venv/
+env/
+ENV/
+*.env
+
+# === Environment Variables ===
+.env
+.env.*
+
+# === SQLite & DB Files ===
+*.sqlite3
+*.db
+
+# === Jupyter Notebooks ===
+.ipynb_checkpoints/
+
+# === PyCharm Project Files ===
+.idea/
+
+# === VSCode (if you ever open it in VSCode) ===
+.vscode/
+
+# === macOS ===
+.DS_Store
+
+# === Windows ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Logs & Caches ===
+*.log
+*.pot
+*.mo
+*.bak
+*.swp
+.cache/
+*.tmp
+*.pid
+*.coverage
+coverage.xml
+htmlcov/
+
+# === Test Output ===
+.tox/
+.nox/
+.pytest_cache/
+.junit/
+
+# === Packaging ===
+build/
+dist/
+*.egg-info/
+.eggs/
+MANIFEST
+
+# === MyPy and Pyright ===
+.mypy_cache/
+.pyright/
