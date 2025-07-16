@@ -1,12 +1,21 @@
 import sqlite3
 from datetime import datetime, timedelta
 import pandas as pd
+import sys
+import os
+import sqlite3
 
 
 class CRM_db:
     def __init__(self):
         """Initialize the CRM database connection and create necessary tables."""
-        self.db_name = 'crm_database.db'  # Database file name
+        # Determine base directory depending on whether app is frozen or not
+        if getattr(sys, 'frozen', False):
+            base_path = os.path.dirname(sys.executable)
+        else:
+            base_path = os.path.dirname(os.path.abspath(__file__))
+
+        self.db_name = os.path.join(base_path, 'crm_database.db')  # Database file name with full path
         self.conn = sqlite3.connect(self.db_name)  # Establish connection to SQLite database
         self.conn.execute("PRAGMA foreign_keys = ON")  # Enable foreign key constraint enforcement
         self.cursor = self.conn.cursor()  # Create a cursor object for database operations

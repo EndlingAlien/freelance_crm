@@ -61,6 +61,9 @@ build/
 dist/
 *.egg-info/
 .eggs/
+*.spec
+*.app
+*.dmg
 MANIFEST
 
 # === MyPy and Pyright ===

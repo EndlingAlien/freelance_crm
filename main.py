@@ -7,8 +7,15 @@ from tkcalendar import Calendar
 from datetime import date, datetime
 from PIL import Image, ImageTk
 from tkinter import messagebox
+import sys
+import os
 
-root = tk.Tk()  # Initialize main Tkinter window
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
 
 # region global vars
 # Variables for project edit/view UI elements
@@ -30,36 +37,6 @@ no_clients_label = None  # Label shown when no clients exist
 edit_clients_dynamic_frame = None  # Frame to hold client edit widgets
 # endregion
 
-# region Fonts
-# Base fixed-width font from Tkinter system fonts
-base_fixed = tkfont.nametofont("TkFixedFont")
-
-# Large underlined title font
-fixed_font_title = tkfont.Font(root=root, name="FixedTitle", exists=False, **base_fixed.actual())
-fixed_font_title.configure(size=40, underline=True)
-
-# Medium header font, underlined
-fixed_font_header = tkfont.Font(root=root, name="FixedHeader", exists=False, **base_fixed.actual())
-fixed_font_header.configure(size=20, underline=True)
-
-# Regular text font for general use
-fixed_font_text = tkfont.Font(root=root, name="FixedText", exists=False, **base_fixed.actual())
-fixed_font_text.configure(size=17)
-
-# Smaller font for views and less important info
-fixed_font_view = tkfont.Font(root=root, name="FixedView", exists=False, **base_fixed.actual())
-fixed_font_view.configure(size=14)
-
-# Instructional text font, smallest size here
-fixed_font_instruct = tkfont.Font(root=root, name="FixedInstruct", exists=False, **base_fixed.actual())
-fixed_font_instruct.configure(size=12)
-
-# Button font, bigger and bold for emphasis
-fixed_font_btn = tkfont.Font(root=root, name="FixedBtn", exists=False, **base_fixed.actual())
-fixed_font_btn.configure(size=20)
-
-
-# endregion
 
 # region Button Functions
 
@@ -195,8 +172,8 @@ def get_client_info(client_name, client_email, client_company):
         if db.create_client(name, email, company):
             confirm_label = tk.Label(root, text="Saved Client", font="FixedText", fg='green')
             confirm_label.place(x=315, y=225)
-            root.after(1000, confirm_label.destroy)  # Remove label after 1 second
-            root.after(1400, display_add_invoice_page)  # Navigate shortly after
+            root.after(800, confirm_label.destroy)  # Remove label after 1 second
+            root.after(1000, display_add_client_page)  # Navigate shortly after
         else:
             messagebox.showerror("CLIENT ERROR",
                                  "Was not able to upload Client into database. Client either exists or information entered incorrectly.")
@@ -264,8 +241,8 @@ def get_project_info(client_name, project_title, start_date, due_date, status):
         if db.create_project(client_name_text, project_title_text, start_date_obj, due_date_obj, status_text):
             confirm_label = tk.Label(root, text="Saved Project", font="FixedText", fg='green')
             confirm_label.place(x=295, y=225)
-            root.after(1000, confirm_label.destroy)  # Remove after 1 sec
-            root.after(1400, display_add_project_page())  # Reload page after slight delay
+            root.after(800, confirm_label.destroy)  # Remove after 1 sec
+            root.after(1000, display_add_project_page)  # Reload page after slight delay
         else:
             messagebox.showerror("PROJECT ERROR",
                                  "Was not able to upload Project into database.")
@@ -365,8 +342,8 @@ def get_invoice_info(project_name, amount, due_date, radio_var):
         if db.create_invoice(project_name.get(), value, due_date_obj, radio_var.get()):
             confirm_label = tk.Label(root, text="Saved Invoice", font="FixedText", fg='green')
             confirm_label.place(x=285, y=225)
-            root.after(1000, confirm_label.destroy)
-            root.after(1400, display_add_invoice_page)
+            root.after(800, confirm_label.destroy)
+            root.after(1000, display_add_invoice_page)
         else:
             messagebox.showerror("INVOICE ERROR",
                                  "Was not able to upload Invoice into database. Have you already added one for this project?")
@@ -505,7 +482,7 @@ def get_client_list(filter_params=None):
         # Show "No Invoices" label or create it if needed
         if no_clients_label is None or not no_clients_label.winfo_exists():
             no_clients_label = tk.Label(root,
-                                        text="No Invoices",
+                                        text="No Clients",
                                         font="FixedText",
                                         fg='green')
             globals()['no_clients_label'] = no_clients_label
@@ -1291,10 +1268,16 @@ def edit_invoice_select(invoice_id, value):
             date_btn = tk.Button(edit_invoice_dynamic_frame, text='Select Date', width=9, font="FixedText", command=lambda: create_calender(date_btn))
             date_btn.pack(pady=5)
         case "Paid":
-            tk.Label(edit_invoice_dynamic_frame, text="Paid:", font="FixedText", bg='gray60').pack(side=TOP, anchor=W)
+            tk.Label(edit_invoice_dynamic_frame, text="Paid:", font="FixedText", bg='gray60').pack(side=TOP)
+
             paid_var = tk.IntVar()
-            Radiobutton(edit_invoice_dynamic_frame, bg='gray60', text="Yes", variable=paid_var, value=1).pack(side=TOP, anchor=E, pady=5)
-            Radiobutton(edit_invoice_dynamic_frame, bg='gray60', text="No", variable=paid_var, value=2).pack(side=TOP, anchor=E, pady=5)
+
+            # Sub-frame to hold the radio buttons horizontally
+            radio_frame = tk.Frame(edit_invoice_dynamic_frame, bg='gray60')
+            radio_frame.pack(side=TOP, pady=5)
+
+            Radiobutton(radio_frame, bg='gray60', text="Yes", variable=paid_var, value=1).pack(side=LEFT, padx=5)
+            Radiobutton(radio_frame, bg='gray60', text="No", variable=paid_var, value=2).pack(side=LEFT, padx=5)
 
     submit_btn = tk.Button(edit_invoice_dynamic_frame,
                            text="Submit",
@@ -1429,7 +1412,7 @@ def display_home_page():
     root.geometry("710x315")
 
     # region Logo
-    image_path = "ufo_logo.png"
+    image_path = resource_path("ufo_logo.png")
     original_image = Image.open(image_path)  # Load the original logo image
     big_image = original_image.resize((280, 220))  # Resize the logo to fit the home page
     logo_image = ImageTk.PhotoImage(big_image)  # Convert image for Tkinter display
@@ -1998,25 +1981,57 @@ def view_outstanding():
 
 # endregion
 
+if __name__ == "__main__":
+    root = tk.Tk()  # Initialize main Tkinter window
 
-# Set the window title for the main application window
-root.title("Endling Customer Relations Manager")
+    # Set the window title for the main application window
+    root.title("Endling Customer Relations Manager")
 
-# Set the initial window size to 723x300 pixels
-root.geometry("723x300")
+    # Set the initial window size to 723x300 pixels
+    root.geometry("723x300")
 
-# Disable window resizing to keep UI layout consistent
-root.resizable(False, False)
+    # Disable window resizing to keep UI layout consistent
+    root.resizable(False, False)
 
-# Bind the window close event to a custom handler to properly close the database connection
-root.protocol("WM_DELETE_WINDOW", on_close)  # ensures DB connection closes cleanly on exit
+    # Bind the window close event to a custom handler to properly close the database connection
+    root.protocol("WM_DELETE_WINDOW", on_close)  # ensures DB connection closes cleanly on exit
 
-# Instantiate the CRM database object for data access throughout the app
-db = CRM_db()
+    # region Fonts
+    # Base fixed-width font from Tkinter system fonts
+    base_fixed = tkfont.nametofont("TkFixedFont")
 
-# Display the initial home page UI when the app launches
-display_home_page()
+    # Large underlined title font
+    fixed_font_title = tkfont.Font(root=root, name="FixedTitle", exists=False, **base_fixed.actual())
+    fixed_font_title.configure(size=40, underline=True)
 
-# Start the Tkinter event loop to listen for user interactions
-root.mainloop()
+    # Medium header font, underlined
+    fixed_font_header = tkfont.Font(root=root, name="FixedHeader", exists=False, **base_fixed.actual())
+    fixed_font_header.configure(size=20, underline=True)
+
+    # Regular text font for general use
+    fixed_font_text = tkfont.Font(root=root, name="FixedText", exists=False, **base_fixed.actual())
+    fixed_font_text.configure(size=17)
+
+    # Smaller font for views and less important info
+    fixed_font_view = tkfont.Font(root=root, name="FixedView", exists=False, **base_fixed.actual())
+    fixed_font_view.configure(size=14)
+
+    # Instructional text font, smallest size here
+    fixed_font_instruct = tkfont.Font(root=root, name="FixedInstruct", exists=False, **base_fixed.actual())
+    fixed_font_instruct.configure(size=12)
+
+    # Button font, bigger and bold for emphasis
+    fixed_font_btn = tkfont.Font(root=root, name="FixedBtn", exists=False, **base_fixed.actual())
+    fixed_font_btn.configure(size=20)
+
+    # endregion
+
+    # Instantiate the CRM database object for data access throughout the app
+    db = CRM_db()
+
+    # Display the initial home page UI when the app launches
+    display_home_page()
+
+    # Start the Tkinter event loop to listen for user interactions
+    root.mainloop()
 
