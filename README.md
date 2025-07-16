@@ -1,8 +1,6 @@
 # EndlingCRM (freelance_crm)
 
-**Freelance CRM** is a streamlined, MySQL-based client relationship management tool designed for solo freelancers who want to keep their projects, clients, and invoices neatly organized. It’s a Python + basic GUI project focusing on clean data management and practical features that help manage freelance workflows without bloat.
-
-Everything here — from the database design to the interface — is built by me with an emphasis on simplicity and functionality that real freelancers need.
+**Freelance CRM** is a streamlined, SQLite3-based client relationship management tool designed for solo freelancers who want to keep their projects, clients, and invoices neatly organized. It’s a Python + basic GUI project focusing on clean data management and practical features that help manage freelance workflows without bloat.
 
 ---
 
@@ -16,10 +14,10 @@ It’s an early-stage project, but it’s laying a foundation for something flex
 
 ## Features
 
-- MySQL-powered backend with tables for clients, projects, invoices, and payments
+- SQLite3-powered backend with tables for clients, projects, and invoices
 - Basic GUI for adding, updating, and tracking freelance work
 - Simple client and project management workflows
-- Invoice tracking with status updates
+- Project tracking with status updates
 - Lightweight and easy to extend
 
 ---
@@ -35,15 +33,16 @@ It’s an early-stage project, but it’s laying a foundation for something flex
 ## Tech Used
 
 - Python
-- MySQL
+- SQLite3
 - Tkinter
 - raw SQL queries
+- Pyinstaller
 
 ---
 
 ## Status
 
-**In Progress (Early Development)**
+**Complete (Version 1 officially released)**
 
 
 ---
@@ -60,4 +59,4 @@ This project highlights:
 
 ## Coming Soon
 
-Build will be available after final polish.
+MYSQL integration hopefully in the future.
