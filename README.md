@@ -44,6 +44,7 @@ It’s an early-stage project, but it’s laying a foundation for something flex
 
 **Complete (Version 1 officially released)**
 
+You can download the latest version of Endling CRM from the [Releases page](https://github.com/EndlingAlien/freelance_crm/releases).
 
 ---
 
